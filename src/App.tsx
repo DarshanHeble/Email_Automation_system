@@ -1,7 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 import "./App.css";
 import Header from "./components/Header";
-import { Button } from "@mui/material";
 
 function App() {
   // async function greet() {
@@ -25,7 +24,6 @@ function App() {
   return (
     <main className="container">
       <Header />
-      <Button onClick={sendEmail}>send</Button>
     </main>
   );
 }
