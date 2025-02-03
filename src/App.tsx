@@ -1,29 +1,21 @@
-import { invoke } from "@tauri-apps/api/core";
 import "./App.css";
-import Header from "./components/Header";
+import Sidebar from "./components/Sidebar";
+import { BrowserRouter, Route, Routes } from "react-router";
+import Dashboard from "./pages/Dashboard";
+import TemplateLibrary from "./pages/TemplateLibrary";
 
 function App() {
-  // async function greet() {
-  //   // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-  //   setGreetMsg(await invoke("greet", { name }));
-  // }
-
-  async function sendEmail() {
-    try {
-      await invoke("send_email", {
-        to: "darshanheble1@gmail.com",
-        subject: "Your Subject",
-        body: "Your email body content",
-      });
-      console.log("Email sent successfully");
-    } catch (error) {
-      console.error("Failed to send email:", error);
-    }
-  }
+  const sidebarWidth = "15rem";
 
   return (
-    <main className="container">
-      <Header />
+    <main className="container" style={{ display: "flex" }}>
+      <Sidebar width={sidebarWidth} />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/templateLibrary" element={<TemplateLibrary />} />
+        </Routes>
+      </BrowserRouter>
     </main>
   );
 }

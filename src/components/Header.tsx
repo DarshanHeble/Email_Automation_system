@@ -17,12 +17,21 @@ const Header: React.FC = () => {
 
   return (
     <Toolbar sx={{ padding: "16px" }}>
-      <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
-        {fileName && <Typography variant="body1">{fileName}</Typography>}
-        <Button variant="contained" component="label" color="primary">
-          Choose CSV
-          <input type="file" accept=".csv" hidden />
-        </Button>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <h2>Hello</h2>
+        <div>
+          {fileName && <Typography variant="body1">{fileName}</Typography>}
+          <Button variant="contained" component="label" color="primary">
+            Choose CSV
+            <input type="file" accept=".csv" hidden />
+          </Button>
+        </div>
       </Box>
 
       <Box sx={{ marginTop: "20px" }}>
