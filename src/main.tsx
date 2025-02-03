@@ -8,6 +8,20 @@ const darkTheme = createTheme({
     mode: "dark",
   },
   components: {
+    // MuiButtonBase: {
+    //   styleOverrides: {
+    //     root: {
+    //       textTransform: "capitalize",
+    //     },
+    //   },
+    // },
+    MuiFab: {
+      styleOverrides: {
+        root: {
+          textTransform: "capitalize",
+        },
+      },
+    },
     MuiButton: {
       styleOverrides: {
         root: {
