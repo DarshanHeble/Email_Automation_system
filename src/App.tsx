@@ -4,14 +4,15 @@ import { BrowserRouter, Route, Routes } from "react-router";
 import Dashboard from "./pages/Dashboard";
 import TemplateLibrary from "./pages/TemplateLibrary";
 import EmailTask from "./pages/EmailTask";
+import { useState } from "react";
 
 function App() {
-  const sidebarWidth = "15rem";
+  const [isOpen, setIsOpen] = useState<boolean>(true);
 
   return (
     <main className="container" style={{ display: "flex" }}>
       <BrowserRouter>
-        <Sidebar width={sidebarWidth} />
+        <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/template-library" element={<TemplateLibrary />} />

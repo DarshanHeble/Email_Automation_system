@@ -1,4 +1,4 @@
-import { Add, Dashboard, LibraryAdd } from "@mui/icons-material";
+import { Dashboard, LibraryAdd } from "@mui/icons-material";
 
 export interface MenuItem {
   label: string;

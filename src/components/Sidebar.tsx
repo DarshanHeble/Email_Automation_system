@@ -1,20 +1,22 @@
 import {
   Box,
   Divider,
+  Fab,
   List,
   ListItemButton,
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
+import { Menu } from "@mui/icons-material";
 import { mainItems } from "../constants/sidebar";
-import { FC } from "react";
 import { useNavigate } from "react-router-dom"; // Correct import for useNavigate
 
 interface SidebarProps {
-  width: string;
+  isOpen: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Sidebar: FC<SidebarProps> = ({ width }) => {
+const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
   const navigate = useNavigate();
 
   function handleNavigate(path: string) {
@@ -22,12 +24,31 @@ const Sidebar: FC<SidebarProps> = ({ width }) => {
   }
 
   return (
-    <Box sx={{ width: width, borderRight: 1, borderColor: "divider" }}>
+    <Box
+      sx={{
+        minWidth: isOpen ? "14rem" : "2rem",
+        borderRight: 1,
+        borderColor: "divider",
+        paddingTop: 2,
+        // transition: "all 0.5s ease",
+      }}
+    >
+      <Fab
+        size="medium"
+        sx={{ marginInlineStart: 2 }}
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <Menu />
+      </Fab>
       <List component="nav">
         {mainItems.map((item, index) => (
-          <ListItemButton key={index} onClick={() => handleNavigate(item.path)}>
+          <ListItemButton
+            key={index}
+            // sx={{ transition: "all 2s ease" }}
+            onClick={() => handleNavigate(item.path)}
+          >
             <ListItemIcon>{item.icon}</ListItemIcon>
-            <ListItemText primary={item.label} />
+            {isOpen && <ListItemText primary={item.label} />}
           </ListItemButton>
         ))}
       </List>
