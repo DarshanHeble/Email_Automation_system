@@ -3,18 +3,11 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
 
-const darkTheme = createTheme({
+const theme = createTheme({
   palette: {
     mode: "dark",
   },
   components: {
-    // MuiButtonBase: {
-    //   styleOverrides: {
-    //     root: {
-    //       textTransform: "capitalize",
-    //     },
-    //   },
-    // },
     MuiFab: {
       styleOverrides: {
         root: {
@@ -29,12 +22,19 @@ const darkTheme = createTheme({
         },
       },
     },
+    MuiDialog: {
+      styleOverrides: {
+        paper: {
+          backgroundImage: "none",
+        },
+      },
+    },
   },
 });
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <ThemeProvider theme={darkTheme}>
+    <ThemeProvider theme={theme}>
       <CssBaseline />
       <App />
     </ThemeProvider>
