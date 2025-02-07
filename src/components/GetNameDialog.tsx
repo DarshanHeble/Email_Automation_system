@@ -27,8 +27,6 @@ const GetNameDialog: React.FC<GetNameDialogProps> = ({
     if (open) {
       const timer = setTimeout(() => {
         if (inputRef.current) {
-          console.log(inputRef);
-
           inputRef.current.focus();
         }
       }, 200);
@@ -39,6 +37,7 @@ const GetNameDialog: React.FC<GetNameDialogProps> = ({
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // Prevents the page from reloading
     if (name.trim()) onSubmit(name.trim());
+    setName("");
     onClose();
   };
 

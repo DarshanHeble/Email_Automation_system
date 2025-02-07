@@ -3,20 +3,27 @@ import TemplateCard from "../components/TemplateCard";
 import { Add } from "@mui/icons-material";
 import GetNameDialog from "../components/GetNameDialog";
 import { useState } from "react";
+import EditorDailog from "../components/EditorDailog";
 
 function TemplateLibrary() {
   const [openNameDialog, setOpenNameDialog] = useState(false);
+  const [openEditorDialog, setOpenEditorDialog] = useState(false);
+  const [currentTemplate, setCurrentTemplate] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
 
-  function handleDialogOpen() {
+  function handleNameDialogOpen() {
     setOpenNameDialog(true);
   }
 
-  function handleDialogSubmit(name: string) {
-    console.log(name);
-  }
+  function handleNameDialogSubmit(templateName: string) {
+    const newId = `template-${Date.now()}`;
+    setCurrentTemplate({ id: newId, name: templateName });
 
-  function handleDialogClose() {
-    setOpenNameDialog(false);
+    // Close name dialog and open editor dialog
+    // setOpenNameDialog(false);
+    setOpenEditorDialog(true);
   }
 
   return (
@@ -27,7 +34,10 @@ function TemplateLibrary() {
         </Grid2>
         <Grid2 size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
           <Card sx={{ height: "100%" }}>
-            <CardActionArea sx={{ height: "100%" }} onClick={handleDialogOpen}>
+            <CardActionArea
+              sx={{ height: "100%" }}
+              onClick={handleNameDialogOpen}
+            >
               <CardContent sx={{ display: "grid", placeItems: "center" }}>
                 <Add sx={{ fontSize: "6rem" }} />
               </CardContent>
@@ -35,11 +45,16 @@ function TemplateLibrary() {
           </Card>
         </Grid2>
       </Grid2>
-      {/* <TemplateEditor /> */}
+
       <GetNameDialog
         open={openNameDialog}
-        onClose={handleDialogClose}
-        onSubmit={handleDialogSubmit}
+        onClose={() => setOpenNameDialog(false)}
+        onSubmit={handleNameDialogSubmit}
+      />
+      <EditorDailog
+        open={openEditorDialog}
+        currentTemplate={currentTemplate!}
+        onClose={() => setOpenEditorDialog(false)}
       />
     </div>
   );

@@ -3,7 +3,7 @@ import Sidebar from "./components/Sidebar";
 import { BrowserRouter, Route, Routes } from "react-router";
 import Dashboard from "./pages/Dashboard";
 import TemplateLibrary from "./pages/TemplateLibrary";
-import EmailTask from "./pages/EmailTask";
+// import EmailTask from "./pages/EmailTask";
 import { useState } from "react";
 
 function App() {
@@ -16,7 +16,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/template-library" element={<TemplateLibrary />} />
-          <Route path="/email-task/:taskId" element={<EmailTask />} />
+          {/* <Route path="/email-task/:taskId" element={<EmailTask />} /> */}
         </Routes>
       </BrowserRouter>
     </main>
