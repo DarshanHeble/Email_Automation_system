@@ -8,5 +8,6 @@ html,
 body,
 #root,
 .container {
-  height: 100%;
+  height: -webkit-fill-available;
+  overflow: hidden;
 }
