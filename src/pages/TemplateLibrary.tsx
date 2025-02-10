@@ -2,16 +2,24 @@ import { Card, CardActionArea, CardContent, Grid2 } from "@mui/material";
 import TemplateCard from "../components/TemplateCard";
 import { Add } from "@mui/icons-material";
 import GetNameDialog from "../components/GetNameDialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EditorDailog from "../components/EditorDailog";
+import { addTemplate, getTemplates } from "../utils/database";
 
 function TemplateLibrary() {
   const [openNameDialog, setOpenNameDialog] = useState(false);
   const [openEditorDialog, setOpenEditorDialog] = useState(false);
+  const [templates, setTemplates] = useState<Template[]>([]);
   const [currentTemplate, setCurrentTemplate] = useState<{
     id: string;
-    name: string;
   } | null>(null);
+
+  useEffect(() => {
+    getTemplates().then((templates) => {
+      console.log(templates);
+      setTemplates(templates.map((id) => ({ id })));
+    });
+  }, []);
 
   function handleNameDialogOpen() {
     setOpenNameDialog(true);
@@ -19,7 +27,12 @@ function TemplateLibrary() {
 
   function handleNameDialogSubmit(templateName: string) {
     const newId = `template-${Date.now()}`;
-    setCurrentTemplate({ id: newId, name: templateName });
+    addTemplate(
+      newId,
+      templateName,
+      "Start creating your email template here..."
+    );
+    setCurrentTemplate({ id: newId });
 
     // Close name dialog and open editor dialog
     // setOpenNameDialog(false);

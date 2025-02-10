@@ -10,7 +10,7 @@ import TemplateEditor from "./TemplateEditor";
 
 interface EditorDailogProps {
   open: boolean;
-  currentTemplate: { id: string; name: string } | null;
+  currentTemplate: { id: string } | null;
   onClose: () => void;
 }
 
@@ -23,7 +23,7 @@ const EditorDailog: FC<EditorDailogProps> = ({
 
   return (
     <Dialog open={open}>
-      <DialogTitle>{currentTemplate.name} </DialogTitle>
+      <DialogTitle>{currentTemplate.id} </DialogTitle>
       <DialogContent>
         <TemplateEditor />
       </DialogContent>

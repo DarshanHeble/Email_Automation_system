@@ -77,7 +77,10 @@ export async function updateTemplate(
 export async function getTemplates() {
   if (!db) throw new Error("Database not initialized");
   try {
-    return db.select<Template[]>("SELECT * FROM templates");
+    const results = await db.select<Template[]>(
+      "SELECT id, name, content FROM templates"
+    );
+    return results;
   } catch (error) {
     console.error("Error fetching templates", error);
     return [];
