@@ -5,19 +5,17 @@ import GetNameDialog from "../components/GetNameDialog";
 import { useEffect, useState } from "react";
 import EditorDailog from "../components/EditorDailog";
 import { addTemplate, getTemplates } from "../utils/database";
+import { Template } from "../Types/types";
 
 function TemplateLibrary() {
   const [openNameDialog, setOpenNameDialog] = useState(false);
   const [openEditorDialog, setOpenEditorDialog] = useState(false);
   const [templates, setTemplates] = useState<Template[]>([]);
-  const [currentTemplate, setCurrentTemplate] = useState<{
-    id: string;
-  } | null>(null);
+  const [newTemplate, setNewTemplate] = useState<Template | null>(null);
 
   useEffect(() => {
     getTemplates().then((templates) => {
-      console.log(templates);
-      setTemplates(templates.map((id) => ({ id })));
+      setTemplates(templates);
     });
   }, []);
 
@@ -32,7 +30,11 @@ function TemplateLibrary() {
       templateName,
       "Start creating your email template here..."
     );
-    setCurrentTemplate({ id: newId });
+    setNewTemplate({
+      id: newId,
+      name: templateName,
+      content: "Start creating your email template here...",
+    });
 
     // Close name dialog and open editor dialog
     // setOpenNameDialog(false);
@@ -42,9 +44,12 @@ function TemplateLibrary() {
   return (
     <div style={{ width: "100%", padding: "20px" }}>
       <Grid2 container spacing={2}>
-        <Grid2 size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-          <TemplateCard />
-        </Grid2>
+        {templates.map((template, index) => (
+          <Grid2 key={index} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+            <TemplateCard template={template} />
+          </Grid2>
+        ))}
+
         <Grid2 size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
           <Card sx={{ height: "100%" }}>
             <CardActionArea
@@ -66,7 +71,7 @@ function TemplateLibrary() {
       />
       <EditorDailog
         open={openEditorDialog}
-        currentTemplate={currentTemplate!}
+        template={newTemplate!}
         onClose={() => setOpenEditorDialog(false)}
       />
     </div>

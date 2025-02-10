@@ -9,8 +9,14 @@ import {
   toggleHeading,
   toggleItalic,
 } from "../utils/editor";
+import { Template } from "../Types/types";
+import { FC } from "react";
 
-function TemplateEditor() {
+interface TemplateEditorProps {
+  template: Template;
+}
+
+const TemplateEditor: FC<TemplateEditorProps> = () => {
   const editor = useEditor({
     extensions: [StarterKit, Link, Image],
     content: "Start creating your email template here...",
@@ -18,7 +24,6 @@ function TemplateEditor() {
 
   return (
     <Box>
-      Template Editor
       {editor ? (
         <Container>
           <Box>
@@ -37,6 +42,6 @@ function TemplateEditor() {
       )}
     </Box>
   );
-}
+};
 
 export default TemplateEditor;
