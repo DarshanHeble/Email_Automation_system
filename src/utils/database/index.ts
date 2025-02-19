@@ -71,6 +71,56 @@ export async function updateTemplate(
 }
 
 /**
+ * Update the name of an existing template in the database.
+ * @param id - Unique identifier of the template to update.
+ * @param name - New name of the template.
+ */
+export async function updateTemplateName(id: string, name: string) {
+  try {
+    if (!db) throw new Error("Database not initialized");
+    const result = await db.execute(
+      "UPDATE templates SET name = ? WHERE id = ?",
+      [name, id]
+    );
+
+    // Check if the update affected any rows
+    if (result.rowsAffected === 0) {
+      throw new Error(`No template found with ID: ${id}`);
+    }
+
+    console.log(`Template name updated to "${name}" successfully.`);
+  } catch (error) {
+    console.error("Error updating template name:", error);
+    throw error;
+  }
+}
+
+/**
+ * Update the content of an existing template in the database.
+ * @param id - Unique identifier of the template to update.
+ * @param content - New HTML content of the template.
+ */
+export async function updateTemplateContent(id: string, content: string) {
+  try {
+    if (!db) throw new Error("Database not initialized");
+    const result = await db.execute(
+      "UPDATE templates SET content = ? WHERE id = ?",
+      [content, id]
+    );
+
+    // Check if the update affected any rows
+    if (result.rowsAffected === 0) {
+      throw new Error(`No template found with ID: ${id}`);
+    }
+
+    console.log(`Template content updated successfully.`);
+  } catch (error) {
+    console.error("Error updating template content:", error);
+    throw error;
+  }
+}
+
+/**
  * Fetch all templates from the database.
  * @returns A list of all templates
  */

@@ -1,15 +1,16 @@
 import {
-  Button,
   Dialog,
   DialogContent,
   DialogTitle,
   IconButton,
   Stack,
 } from "@mui/material";
-import { Edit, SaveOutlined, CloseOutlined } from "@mui/icons-material";
-import { FC } from "react";
+import { Edit, CloseOutlined } from "@mui/icons-material";
+import { FC, useState } from "react";
 import TemplateEditor from "./TemplateEditor";
 import { Template } from "../Types/types";
+import GetNameDialog from "./GetNameDialog";
+import { updateTemplateName } from "../utils/database";
 
 interface EditorDailogProps {
   open: boolean;
@@ -18,32 +19,50 @@ interface EditorDailogProps {
 }
 
 const EditorDailog: FC<EditorDailogProps> = ({ open, template, onClose }) => {
+  const [nameDialogOpen, setNameDialogOpen] = useState(false);
+
+  function handleNameDialogClose() {
+    setNameDialogOpen(false);
+  }
+
+  function handleNameDialogSubmit(name: string) {
+    if (template) {
+      template.name = name;
+      updateTemplateName(template.id, name);
+    }
+    setNameDialogOpen(false);
+  }
   if (!template) return null;
 
   return (
-    <Dialog open={open} maxWidth="md" fullWidth>
-      <DialogTitle>
-        <Stack direction={"row"} justifyContent={"space-between"}>
-          <Stack direction={"row"} spacing={1}>
-            <h3>{template.name}</h3>
-            <IconButton>
-              <Edit />
-            </IconButton>
+    <>
+      <Dialog open={open} maxWidth="md" fullWidth>
+        <DialogTitle>
+          <Stack direction={"row"} justifyContent={"space-between"}>
+            <Stack direction={"row"} spacing={1}>
+              <h3>{template.name}</h3>
+              <IconButton onClick={() => setNameDialogOpen(true)}>
+                <Edit />
+              </IconButton>
+            </Stack>
+            <Stack direction={"row"} spacing={1}>
+              <IconButton onClick={onClose}>
+                <CloseOutlined />
+              </IconButton>
+            </Stack>
           </Stack>
-          <Stack direction={"row"} spacing={1}>
-            <IconButton onClick={onClose} color="success">
-              <SaveOutlined />
-            </IconButton>
-            <IconButton color="primary" onClick={onClose}>
-              <CloseOutlined />
-            </IconButton>
-          </Stack>
-        </Stack>
-      </DialogTitle>
-      <DialogContent dividers>
-        <TemplateEditor template={template} />
-      </DialogContent>
-    </Dialog>
+        </DialogTitle>
+        <DialogContent dividers>
+          <TemplateEditor template={template} />
+        </DialogContent>
+      </Dialog>
+      <GetNameDialog
+        open={nameDialogOpen}
+        text={template.name}
+        onClose={handleNameDialogClose}
+        onSubmit={handleNameDialogSubmit}
+      />
+    </>
   );
 };
 

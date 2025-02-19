@@ -11,12 +11,14 @@ import React, { useEffect, useRef, useState } from "react";
 
 interface GetNameDialogProps {
   open: boolean;
+  text?: string;
   onSubmit: (name: string) => void;
   onClose: () => void;
 }
 
 const GetNameDialog: React.FC<GetNameDialogProps> = ({
   open,
+  text,
   onClose,
   onSubmit,
 }) => {
@@ -30,23 +32,34 @@ const GetNameDialog: React.FC<GetNameDialogProps> = ({
           inputRef.current.focus();
         }
       }, 200);
+      if (text) {
+        setName(text);
+      }
       return () => clearTimeout(timer);
     }
-  }, [open]);
+  }, [open, text]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // Prevents the page from reloading
-    if (name.trim()) onSubmit(name.trim());
+
+    if (name.trim()) {
+      onSubmit(name.trim());
+    }
+
+    handleClose();
+  };
+
+  function handleClose() {
     setName("");
     onClose();
-  };
+  }
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
   };
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={handleClose}>
       <Box component="form" onSubmit={handleSubmit}>
         <DialogTitle>Template Name</DialogTitle>
         <DialogContent>
@@ -63,8 +76,10 @@ const GetNameDialog: React.FC<GetNameDialogProps> = ({
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={onClose}>Cancel</Button>
-          <Button type="submit">Submit</Button>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button type="submit" color="success">
+            Submit
+          </Button>
         </DialogActions>
       </Box>
     </Dialog>

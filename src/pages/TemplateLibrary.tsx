@@ -1,10 +1,10 @@
-import { Card, CardActionArea, CardContent, Grid2 } from "@mui/material";
-import TemplateCard from "../components/TemplateCard";
-import { Add } from "@mui/icons-material";
-import GetNameDialog from "../components/GetNameDialog";
 import { useEffect, useState } from "react";
+import { Fab, Grid2 } from "@mui/material";
+import { Add } from "@mui/icons-material";
+import TemplateCard from "../components/TemplateCard";
+import GetNameDialog from "../components/GetNameDialog";
 import EditorDailog from "../components/EditorDailog";
-import { addTemplate, getTemplates } from "../utils/database";
+import { addTemplate, deleteTemplate, getTemplates } from "../utils/database";
 import { Template } from "../Types/types";
 
 function TemplateLibrary() {
@@ -25,43 +25,69 @@ function TemplateLibrary() {
 
   function handleNameDialogSubmit(templateName: string) {
     const newId = `template-${Date.now()}`;
-    addTemplate(
-      newId,
-      templateName,
-      "Start creating your email template here..."
-    );
+    const defaultContent = "Start creating your email template here...";
+
+    addTemplate(newId, templateName, defaultContent);
     setNewTemplate({
       id: newId,
       name: templateName,
-      content: "Start creating your email template here...",
+      content: defaultContent,
     });
+
+    setTemplates((prev) => [
+      ...prev,
+      {
+        id: newId,
+        name: templateName,
+        content: defaultContent,
+      },
+    ]);
 
     // Close name dialog and open editor dialog
     // setOpenNameDialog(false);
     setOpenEditorDialog(true);
   }
 
+  function handleTemplateDelete(id: string) {
+    setTemplates(templates.filter((template) => template.id !== id));
+
+    deleteTemplate(id)
+      .then(() => alert("Template Deleted"))
+      .catch((err) => alert(`Some went wrong ${err}`));
+  }
+
   return (
     <div style={{ width: "100%", padding: "20px" }}>
       <Grid2 container spacing={2}>
-        {templates.map((template, index) => (
-          <Grid2 key={index} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-            <TemplateCard template={template} />
-          </Grid2>
-        ))}
+        {templates.length == 0 ? (
+          <div
+            style={{
+              height: "-webkit-fill-available",
+              display: "grid",
+              placeItems: "center",
+            }}
+          >
+            Template is Empty
+          </div>
+        ) : (
+          templates.map((template, index) => (
+            <Grid2 key={index} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+              <TemplateCard
+                template={template}
+                onDelete={handleTemplateDelete}
+              />
+            </Grid2>
+          ))
+        )}
 
-        <Grid2 size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-          <Card sx={{ height: "100%" }}>
-            <CardActionArea
-              sx={{ height: "100%" }}
-              onClick={handleNameDialogOpen}
-            >
-              <CardContent sx={{ display: "grid", placeItems: "center" }}>
-                <Add sx={{ fontSize: "6rem" }} />
-              </CardContent>
-            </CardActionArea>
-          </Card>
-        </Grid2>
+        <Fab
+          variant="extended"
+          onClick={handleNameDialogOpen}
+          sx={{ position: "absolute", bottom: "3rem", right: "3rem" }}
+        >
+          <Add sx={{ mr: 2 }} />
+          New Template
+        </Fab>
       </Grid2>
 
       <GetNameDialog
