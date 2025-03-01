@@ -1,14 +1,12 @@
-import Database from "@tauri-apps/plugin-sql";
 import { Template } from "../../Types/types";
-
-let db: Database | null = null;
+import { getDatabase } from "./init";
 
 /**
- * Initialize the database and create necessary tables if not found.
+ * Initialize the templates table.
  */
-export async function initDatabase() {
-  if (!db) {
-    db = await Database.load("sqlite:templates.db");
+export async function initTemplatesTable() {
+  const db = await getDatabase();
+  try {
     await db.execute(`
         CREATE TABLE IF NOT EXISTS templates (
             id TEXT PRIMARY KEY,
@@ -16,7 +14,10 @@ export async function initDatabase() {
             content TEXT NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )
-    `);
+      `);
+    return true;
+  } catch (error) {
+    throw new Error("Error initializing templates table in Database");
   }
 }
 
@@ -28,7 +29,7 @@ export async function initDatabase() {
  */
 export async function addTemplate(id: string, name: string, content: string) {
   try {
-    if (!db) throw new Error("Database not initialized");
+    const db = await getDatabase();
     await db.execute(
       "INSERT INTO templates (id, name, content) VALUES (?, ?, ?)",
       [id, name, content]
@@ -52,7 +53,7 @@ export async function updateTemplate(
   content: string
 ) {
   try {
-    if (!db) throw new Error("Database not initialized");
+    const db = await getDatabase();
     const result = await db.execute(
       "UPDATE templates SET name = ?, content = ? WHERE id = ?",
       [name, content, id]
@@ -77,7 +78,7 @@ export async function updateTemplate(
  */
 export async function updateTemplateName(id: string, name: string) {
   try {
-    if (!db) throw new Error("Database not initialized");
+    const db = await getDatabase();
     const result = await db.execute(
       "UPDATE templates SET name = ? WHERE id = ?",
       [name, id]
@@ -102,7 +103,7 @@ export async function updateTemplateName(id: string, name: string) {
  */
 export async function updateTemplateContent(id: string, content: string) {
   try {
-    if (!db) throw new Error("Database not initialized");
+    const db = await getDatabase();
     const result = await db.execute(
       "UPDATE templates SET content = ? WHERE id = ?",
       [content, id]
@@ -125,7 +126,7 @@ export async function updateTemplateContent(id: string, content: string) {
  * @returns A list of all templates
  */
 export async function getTemplates() {
-  if (!db) throw new Error("Database not initialized");
+  const db = await getDatabase();
   try {
     const results = await db.select<Template[]>(
       "SELECT id, name, content FROM templates"
@@ -143,7 +144,7 @@ export async function getTemplates() {
  * @returns The template object if found, otherwise null.
  */
 export async function getTemplateById(id: string) {
-  if (!db) throw new Error("Database not initialized");
+  const db = await getDatabase();
   try {
     const results = await db.select<Template[]>(
       "SELECT * FROM templates WHERE id = ?",
@@ -162,7 +163,7 @@ export async function getTemplateById(id: string) {
  * @param id - Unique identifier of the template to delete.
  */
 export async function deleteTemplate(id: string) {
-  if (!db) throw new Error("Database not initialized");
+  const db = await getDatabase();
   try {
     await db.execute("DELETE FROM templates WHERE id = ?", [id]);
     return true;

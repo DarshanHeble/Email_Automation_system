@@ -10,7 +10,7 @@ import { FC, useState } from "react";
 import TemplateEditor from "./TemplateEditor";
 import { Template } from "../Types/types";
 import GetNameDialog from "./GetNameDialog";
-import { updateTemplateName } from "../utils/database";
+import { updateTemplateName } from "../utils/database/templates";
 
 interface EditorDailogProps {
   open: boolean;

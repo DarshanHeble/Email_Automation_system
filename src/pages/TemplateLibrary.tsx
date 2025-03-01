@@ -4,7 +4,11 @@ import { Add } from "@mui/icons-material";
 import TemplateCard from "../components/TemplateCard";
 import GetNameDialog from "../components/GetNameDialog";
 import EditorDailog from "../components/EditorDailog";
-import { addTemplate, deleteTemplate, getTemplates } from "../utils/database";
+import {
+  addTemplate,
+  deleteTemplate,
+  getTemplates,
+} from "../utils/database/templates";
 import { Template } from "../Types/types";
 
 function TemplateLibrary() {

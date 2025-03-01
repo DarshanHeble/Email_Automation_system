@@ -6,3 +6,17 @@ export type Template = {
   content: string;
   //   createdAt: string;
 };
+
+export type User = {
+  id: string;
+  name: string;
+  email: string;
+};
+
+export type EmailTask = {
+  id: string;
+  email: string;
+  message: string;
+  scheduled_time: string;
+  status: string;
+};

@@ -14,7 +14,7 @@ import {
 import { Template } from "../Types/types";
 import { FC } from "react";
 import { SaveOutlined } from "@mui/icons-material";
-import { updateTemplateContent } from "../utils/database";
+import { updateTemplateContent } from "../utils/database/templates";
 
 interface TemplateEditorProps {
   template: Template;
@@ -52,7 +52,7 @@ const TemplateEditor: FC<TemplateEditorProps> = ({ template }) => {
               <Button onClick={() => toggleHeading(editor, 2)}>
                 Heading 2
               </Button>
-              <Button>Add Link</Button>
+              {/* <Button>Add Link</Button> */}
               <Button onClick={() => addImage(editor)}>Add Image</Button>
             </Stack>
             <Stack>
@@ -62,7 +62,10 @@ const TemplateEditor: FC<TemplateEditorProps> = ({ template }) => {
             </Stack>
           </Stack>
           <Box sx={{ paddingBlock: 2 }}>
-            <EditorContent editor={editor} color="red" />
+            <EditorContent
+              editor={editor}
+              style={{ border: "1px solid grey`" }}
+            />
           </Box>
         </Container>
       ) : (
