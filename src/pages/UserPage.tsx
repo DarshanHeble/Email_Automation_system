@@ -8,11 +8,19 @@ import { User } from "../Types";
 import { Container, Fab, IconButton } from "@mui/material";
 import { EditOutlined, PersonAddAlt1 } from "@mui/icons-material";
 import UserDialog from "../components/dialog/UserDialog";
-import { addUser } from "../utils/database/user";
+import { addUser, getAllUsers } from "../utils/database/user";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 function UserTable() {
   const [openUserDialog, setOpenUserDialog] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | undefined>();
+
+  const queryClient = useQueryClient();
+
+  const { data: users } = useQuery({
+    queryKey: ["users"],
+    queryFn: getAllUsers,
+  });
 
   const userColumns = useMemo<MRT_ColumnDef<User>[]>(
     () => [
@@ -34,7 +42,7 @@ function UserTable() {
 
   const userTable = useMaterialReactTable({
     columns: userColumns,
-    data: [],
+    data: users || [],
 
     enableRowNumbers: true,
     enableEditing: true,
@@ -74,6 +82,9 @@ function UserTable() {
 
   async function handleSaveUser(user: User) {
     console.log(user);
+    queryClient.setQueryData<User[]>(["users"], (prevUsers) =>
+      prevUsers ? [...prevUsers, user] : [user]
+    );
     await addUser(user);
     setOpenUserDialog(false);
   }

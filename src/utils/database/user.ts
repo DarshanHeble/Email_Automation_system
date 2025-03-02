@@ -112,7 +112,7 @@ export async function updateUser(
 export async function getAllUsers() {
   const db = await getDatabase();
   try {
-    const result = await db.select("SELECT * FROM users");
+    const result = await db.select<User[]>("SELECT * FROM users");
     console.log("Users retrieved successfully.");
     return result;
   } catch (error) {
