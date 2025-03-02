@@ -11,7 +11,7 @@ import {
   toggleHeading,
   toggleItalic,
 } from "../utils/editor";
-import { Template } from "../Types/types";
+import { Template } from "../Types";
 import { FC } from "react";
 import { SaveOutlined } from "@mui/icons-material";
 import { updateTemplateContent } from "../utils/database/templates";

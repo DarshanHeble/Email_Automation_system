@@ -9,12 +9,14 @@ import { useQuery } from "@tanstack/react-query";
 import { initTemplatesTable } from "./utils/database/templates";
 import { useState } from "react";
 import UserPage from "./pages/UserPage";
+import { initUsersTable } from "./utils/database/user";
 
 function App() {
   const [isOpen, setIsOpen] = useState<boolean>(true);
 
   async function initializeDatabase() {
     await initTemplatesTable();
+    await initUsersTable();
     return true;
   }
 

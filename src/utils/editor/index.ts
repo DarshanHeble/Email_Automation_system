@@ -4,7 +4,7 @@
 // }
 
 import { Editor } from "@tiptap/react";
-import { Level } from "../../Types/types";
+import { Level } from "../../Types";
 
 export function toggleBold(editor: Editor) {
   editor.chain().focus().toggleBold().run();

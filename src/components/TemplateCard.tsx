@@ -6,7 +6,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import { FC, useState, MouseEvent } from "react";
-import { Template } from "../Types/types";
+import { Template } from "../Types";
 import EditorDailog from "./EditorDailog";
 
 interface TemplateCardProps {

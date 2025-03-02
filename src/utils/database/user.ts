@@ -1,4 +1,4 @@
-import { User } from "../../Types/types";
+import { User } from "../../Types";
 import { getDatabase } from "./init";
 
 /**
@@ -29,12 +29,7 @@ export async function initUsersTable() {
  * @param email User Email
  * @param dob User Date Of Birth
  */
-export async function addUser(
-  id: string,
-  name: string,
-  email: string,
-  dob: string
-) {
+export async function addUser(user: User) {
   const db = await getDatabase();
   try {
     await db.execute(
@@ -42,7 +37,7 @@ export async function addUser(
         INSERT INTO users (id, name, email, DOB)
         VALUES (?, ?, ?, ?)
         `,
-      [id, name, email, dob]
+      [user.id, user.name, user.email, user.dob]
     );
     console.log("User added successfully.");
   } catch (error) {

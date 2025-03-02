@@ -9,7 +9,7 @@ import {
   deleteTemplate,
   getTemplates,
 } from "../utils/database/templates";
-import { Template } from "../Types/types";
+import { Template } from "../Types";
 
 function TemplateLibrary() {
   const [openNameDialog, setOpenNameDialog] = useState(false);

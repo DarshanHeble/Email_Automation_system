@@ -1,4 +1,4 @@
-import { Template } from "../../Types/types";
+import { Template } from "../../Types";
 import { getDatabase } from "./init";
 
 /**
@@ -15,7 +15,7 @@ export async function initTemplatesTable() {
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )
       `);
-    return true;
+    console.log("Template table initialised successfully");
   } catch (error) {
     throw new Error("Error initializing templates table in Database");
   }

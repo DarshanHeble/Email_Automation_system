@@ -20,6 +20,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           textTransform: "capitalize",
+          borderRadius: 20,
         },
       },
     },
