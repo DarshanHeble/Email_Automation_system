@@ -6,9 +6,18 @@ import {
 import { useMemo, useState } from "react";
 import { User } from "../Types";
 import { Container, Fab, IconButton } from "@mui/material";
-import { EditOutlined, PersonAddAlt1 } from "@mui/icons-material";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  PersonAddAlt1,
+} from "@mui/icons-material";
 import UserDialog from "../components/dialog/UserDialog";
-import { addUser, getAllUsers } from "../utils/database/user";
+import {
+  addUser,
+  getAllUsers,
+  removeUser,
+  updateUser,
+} from "../utils/database/user";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 function UserTable() {
@@ -36,6 +45,10 @@ function UserTable() {
         accessorKey: "email",
         header: "Email",
       },
+      {
+        accessorKey: "dob",
+        header: "DOB",
+      },
     ],
     []
   );
@@ -57,13 +70,29 @@ function UserTable() {
         "id",
         "name",
         "email",
+        "dob",
         "mrt-row-actions",
       ],
     },
+    muiTablePaperProps: {
+      sx: {
+        display: "flex",
+        flexDirection: "column",
+        height: "-webkit-fill-available",
+      },
+    },
+    muiTableContainerProps: {
+      sx: {
+        height: "-webkit-fill-available",
+      },
+    },
     renderRowActions: ({ row }) => (
-      <div>
+      <div style={{ display: "flex" }}>
         <IconButton onClick={() => editUser(row.original)}>
           <EditOutlined />
+        </IconButton>
+        <IconButton color="error" onClick={() => deleteUser(row.original)}>
+          <DeleteOutlined />
         </IconButton>
       </div>
     ),
@@ -80,16 +109,24 @@ function UserTable() {
     ),
   });
 
-  async function handleSaveUser(user: User) {
-    console.log(user);
-    queryClient.setQueryData<User[]>(["users"], (prevUsers) =>
-      prevUsers ? [...prevUsers, user] : [user]
-    );
-    await addUser(user);
+  async function handleSaveUser(user: User, action: "create" | "update") {
+    if (action === "create") {
+      queryClient.setQueryData<User[]>(["users"], (prevUsers) =>
+        prevUsers ? [...prevUsers, user] : [user]
+      );
+      await addUser(user);
+    } else if (action === "update") {
+      queryClient.setQueryData<User[]>(["users"], (prevUsers) =>
+        prevUsers?.map((u) => (u.id === user.id ? user : u))
+      );
+      await updateUser(user);
+    }
     setOpenUserDialog(false);
+    setSelectedUser(undefined);
   }
 
   function handleCloseDialog() {
+    setSelectedUser(undefined);
     setOpenUserDialog(false);
   }
 
@@ -97,6 +134,21 @@ function UserTable() {
     setSelectedUser(user);
     setOpenUserDialog(true);
   }
+
+  async function deleteUser(user: User) {
+    // `confirm` is synchronous, so no need for `await`
+    const isConfirmed = await confirm(
+      `Are you sure you want to delete this user ${user.name}?`
+    );
+
+    if (isConfirmed) {
+      await removeUser(user.id);
+      queryClient.setQueryData<User[]>(["users"], (prevUsers) =>
+        prevUsers?.filter((u) => u.id !== user.id)
+      );
+    }
+  }
+
   return (
     <>
       <MaterialReactTable table={userTable} />
@@ -112,7 +164,7 @@ function UserTable() {
 
 const UserPage = () => {
   return (
-    <Container sx={{ mt: 3 }}>
+    <Container sx={{ marginBlock: 3 }}>
       <UserTable />
     </Container>
   );

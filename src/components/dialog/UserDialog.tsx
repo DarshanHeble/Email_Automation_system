@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { User } from "../../Types";
 import {
   Dialog,
@@ -12,11 +12,12 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
+import { v4 } from "uuid";
 
 interface UserDialogProps {
   open: boolean;
   user?: User;
-  onSave: (user: User) => void;
+  onSave: (user: User, action: "create" | "update") => void;
   onClose: () => void;
 }
 
@@ -27,11 +28,27 @@ const UserDialog: React.FC<UserDialogProps> = ({
   onClose,
 }) => {
   const [formData, setFormData] = useState<User>({
-    id: user?.id || "",
+    id: user?.id || v4(),
     name: user?.name || "",
     email: user?.email || "",
-    dob: user?.dob || "", // Added dob property
+    dob: user?.dob || "",
   });
+  const [action, setAction] = useState<"create" | "update">("create");
+
+  useEffect(() => {
+    if (open && !user) {
+      setFormData({
+        id: v4(),
+        name: "",
+        email: "",
+        dob: "",
+      });
+      setAction("create");
+    } else if (user) {
+      setFormData(user);
+      setAction("update");
+    }
+  }, [open, user]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -42,8 +59,10 @@ const UserDialog: React.FC<UserDialogProps> = ({
   };
 
   const handleSubmit = (e: React.FormEvent) => {
+    console.table(formData);
+
     e.preventDefault();
-    onSave(formData);
+    onSave(formData, action);
   };
 
   const handleDateChange = (date: Dayjs | null) => {
@@ -53,11 +72,32 @@ const UserDialog: React.FC<UserDialogProps> = ({
     });
   };
 
+  const dialogClose = () => {
+    setFormData({
+      id: "",
+      name: "",
+      email: "",
+      dob: "",
+    });
+    onClose();
+  };
+
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="xs">
+    <Dialog open={open} onClose={dialogClose} maxWidth="xs">
       <form onSubmit={handleSubmit}>
         <DialogTitle>{user ? "Update User" : "Create User"}</DialogTitle>
         <DialogContent>
+          <TextField
+            margin="dense"
+            id="id"
+            name="id"
+            label="Id"
+            type="text"
+            fullWidth
+            value={formData.id}
+            onChange={handleChange}
+            required
+          />
           <TextField
             margin="dense"
             id="name"
@@ -96,7 +136,7 @@ const UserDialog: React.FC<UserDialogProps> = ({
           </LocalizationProvider>
         </DialogContent>
         <DialogActions>
-          <Button onClick={onClose} color="error">
+          <Button onClick={dialogClose} color="error">
             Cancel
           </Button>
           <Button type="submit">{user ? "Update" : "Create"}</Button>

@@ -4,7 +4,7 @@ export type Template = {
   id: string;
   name: string;
   content: string;
-  //   createdAt: string;
+  createdAt: string;
 };
 
 export type User = {

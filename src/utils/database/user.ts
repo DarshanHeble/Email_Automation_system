@@ -1,5 +1,6 @@
 import { User } from "../../Types";
 import { getDatabase } from "./init";
+import { format, isValid } from "date-fns";
 
 /**
  * Initialize the User table.
@@ -32,14 +33,23 @@ export async function initUsersTable() {
 export async function addUser(user: User) {
   const db = await getDatabase();
   try {
+    // Validate and parse the DOB
+    const parsedDOB = new Date(user.dob);
+    if (!isValid(parsedDOB)) {
+      throw new Error("Invalid date format for DOB.");
+    }
+
+    // Format DOB as 'YYYY-MM-DD' for SQLite
+    const formattedDOB = format(parsedDOB, "yyyy-MM-dd");
+
     await db.execute(
       `
         INSERT INTO users (id, name, email, DOB)
         VALUES (?, ?, ?, ?)
-        `,
-      [user.id, user.name, user.email, user.dob]
+      `,
+      [user.id, user.name, user.email, formattedDOB]
     );
-    console.log("User added successfully.");
+    console.log("User added successfully.", user);
   } catch (error) {
     console.error("Error adding user:", error);
   }
@@ -63,45 +73,16 @@ export async function removeUser(id: string) {
 }
 
 // Update user information
-export async function updateUser(
-  id: string,
-  name?: string,
-  email?: string,
-  dob?: string
-) {
+export async function updateUser(user: User) {
   const db = await getDatabase();
   try {
-    // Dynamically build the update query based on provided fields
-    const updates: string[] = [];
-    const values: any[] = [];
-
-    if (name) {
-      updates.push("name = ?");
-      values.push(name);
-    }
-    if (email) {
-      updates.push("email = ?");
-      values.push(email);
-    }
-    if (dob) {
-      updates.push("DOB = ?");
-      values.push(dob);
-    }
-
-    if (updates.length === 0) {
-      console.log("No fields to update.");
-      return;
-    }
-
-    values.push(id); // Add `id` for the WHERE clause
-
     const query = `
         UPDATE users
-        SET ${updates.join(", ")}
+        SET name = ?, email = ?, DOB = ?
         WHERE id = ?
       `;
 
-    await db.execute(query, values);
+    await db.execute(query, [user.name, user.email, user.dob, user.id]);
     console.log("User updated successfully.");
   } catch (error) {
     console.error("Error updating user:", error);
@@ -114,6 +95,7 @@ export async function getAllUsers() {
   try {
     const result = await db.select<User[]>("SELECT * FROM users");
     console.log("Users retrieved successfully.");
+    console.table(result);
     return result;
   } catch (error) {
     console.error("Error retrieving users:", error);

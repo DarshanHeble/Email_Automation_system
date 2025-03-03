@@ -9,7 +9,7 @@ let db: Database | null = null;
 
 export async function getDatabase(): Promise<Database> {
   if (!db) {
-    db = await Database.load("sqlite:templates.db");
+    db = await Database.load("sqlite:EmailAutomationSystem.db");
   }
   return db;
 }
