@@ -14,16 +14,16 @@ export const mainItems: MenuItem[] = [
   {
     label: "Dashboard",
     icon: <DashboardOutlined />,
-    path: "/", // Correct path for navigation
+    path: "/",
   },
   {
     label: "Template Library",
     icon: <LibraryAddOutlined />,
-    path: "/template-library", // Correct path for navigation
+    path: "/template-library",
   },
   {
     label: "Manage User",
     icon: <PersonOutlined />,
-    path: "/userPage", // Correct path for navigation
+    path: "/userPage",
   },
 ];

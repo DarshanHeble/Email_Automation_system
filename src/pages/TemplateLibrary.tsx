@@ -96,6 +96,7 @@ function TemplateLibrary() {
 
       <GetNameDialog
         open={openNameDialog}
+        label="Template Name"
         onClose={() => setOpenNameDialog(false)}
         onSubmit={handleNameDialogSubmit}
       />

@@ -12,6 +12,7 @@ import React, { useEffect, useRef, useState } from "react";
 interface GetNameDialogProps {
   open: boolean;
   text?: string;
+  label: string;
   onSubmit: (name: string) => void;
   onClose: () => void;
 }
@@ -19,6 +20,7 @@ interface GetNameDialogProps {
 const GetNameDialog: React.FC<GetNameDialogProps> = ({
   open,
   text,
+  label,
   onClose,
   onSubmit,
 }) => {
@@ -61,14 +63,14 @@ const GetNameDialog: React.FC<GetNameDialogProps> = ({
   return (
     <Dialog open={open} onClose={handleClose}>
       <Box component="form" onSubmit={handleSubmit}>
-        <DialogTitle>Template Name</DialogTitle>
+        <DialogTitle>{label}</DialogTitle>
         <DialogContent>
           <TextField
             inputRef={inputRef}
             value={name}
             type="text"
-            name="Template Name"
-            label="Template Name"
+            name={label}
+            label={label}
             onChange={handleNameChange}
             sx={{ marginBlockStart: 2, width: "15rem" }}
             autoFocus

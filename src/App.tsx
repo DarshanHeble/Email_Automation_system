@@ -10,6 +10,7 @@ import { initTemplatesTable } from "./utils/database/templates";
 import { useState } from "react";
 import UserPage from "./pages/UserPage";
 import { initUsersTable } from "./utils/database/user";
+import { initEmailTasksTable } from "./utils/database/emailTask";
 
 function App() {
   const [isOpen, setIsOpen] = useState<boolean>(true);
@@ -17,6 +18,7 @@ function App() {
   async function initializeDatabase() {
     await initTemplatesTable();
     await initUsersTable();
+    await initEmailTasksTable();
     return true;
   }
 

@@ -4,7 +4,7 @@ export type Template = {
   id: string;
   name: string;
   content: string;
-  createdAt: string;
+  createdAt?: string;
 };
 
 export type User = {
@@ -16,8 +16,10 @@ export type User = {
 
 export type EmailTask = {
   id: string;
-  email: string;
-  message: string;
-  scheduled_time: string;
-  status: string;
+  name: string;
+  templateId?: string;
+  scheduledTime?: string;
+  status?: "pending" | "completed" | "failed";
+  createdAt?: string;
+  lastUpdatedAt?: string;
 };
