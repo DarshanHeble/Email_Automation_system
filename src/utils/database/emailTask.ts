@@ -16,6 +16,7 @@ export async function initEmailTasksTable() {
           last_updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
+
     console.log("Email tasks table initialized Successfully.");
   } catch (error) {
     console.error("Error initializing email_tasks table:", error);
