@@ -33,6 +33,7 @@ export async function addEmailTask(id: string, name: string) {
       VALUES (?, ?)
     `;
     await db.execute(query, [id, name]);
+    console.info("Email task added successfully.");
   } catch (error) {
     console.error("Error adding email task:", error);
     throw new Error("Failed to add email task.");
@@ -137,7 +138,7 @@ export async function getAllEmailTasks() {
       SELECT * FROM email_tasks
       ORDER BY scheduled_time ASC
     `;
-    const result = await db.select(query);
+    const result = await db.select<EmailTask[]>(query);
     return result;
   } catch (error) {
     console.error("Error retrieving all email tasks:", error);

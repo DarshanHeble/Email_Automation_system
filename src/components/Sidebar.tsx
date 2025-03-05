@@ -5,14 +5,16 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  ListSubheader,
 } from "@mui/material";
 import { mainItems } from "../constants/sidebar";
 import { useNavigate } from "react-router-dom"; // Correct import for useNavigate
-import { AddOutlined } from "@mui/icons-material";
+import { AddOutlined, EmailOutlined } from "@mui/icons-material";
 import GetNameDialog from "./GetNameDialog";
 import { useState } from "react";
 import { v4 } from "uuid";
-import { addEmailTask } from "../utils/database/emailTask";
+import { addEmailTask, getAllEmailTasks } from "../utils/database/emailTask";
+import { useQuery } from "@tanstack/react-query";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -34,6 +36,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
       alert(`Failed to add email task: ${error.message}`)
     );
   }
+
+  const { data } = useQuery({
+    queryKey: ["emailTasks"],
+    queryFn: getAllEmailTasks,
+  });
 
   return (
     <>
@@ -65,7 +72,22 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen }) => {
           ))}
         </List>
         <Divider />
+        <List>
+          <ListSubheader>All Task</ListSubheader>
+          {data?.map((task, index) => (
+            <ListItemButton
+              key={index}
+              onClick={() => handleNavigate(`/email-task/${task.id}`)}
+            >
+              <ListItemIcon>
+                <EmailOutlined />
+              </ListItemIcon>
+              <ListItemText primary={task.name} />
+            </ListItemButton>
+          ))}
+        </List>
       </Box>
+
       <GetNameDialog
         open={open}
         label="Email Task Name"

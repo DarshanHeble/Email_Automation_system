@@ -21,10 +21,10 @@ import {
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 function UserTable() {
+  const queryClient = useQueryClient();
+
   const [openUserDialog, setOpenUserDialog] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | undefined>();
-
-  const queryClient = useQueryClient();
 
   const { data: users } = useQuery({
     queryKey: ["users"],

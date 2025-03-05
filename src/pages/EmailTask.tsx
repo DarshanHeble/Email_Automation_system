@@ -1,5 +1,9 @@
+import { useParams } from "react-router-dom";
+import { type EmailTask } from "../Types";
+
 function EmailTask() {
-  return <div>EmailTask</div>;
+  const { taskId } = useParams<EmailTask["id"]>();
+  return <div>Task ID: {taskId}</div>;
 }
 
 export default EmailTask;
