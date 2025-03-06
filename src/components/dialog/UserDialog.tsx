@@ -96,6 +96,7 @@ const UserDialog: React.FC<UserDialogProps> = ({
             fullWidth
             value={formData.id}
             onChange={handleChange}
+            disabled
             required
           />
           <TextField

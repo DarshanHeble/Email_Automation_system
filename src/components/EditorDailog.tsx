@@ -59,6 +59,7 @@ const EditorDailog: FC<EditorDailogProps> = ({ open, template, onClose }) => {
       <GetNameDialog
         open={nameDialogOpen}
         text={template.name}
+        label={template.name}
         onClose={handleNameDialogClose}
         onSubmit={handleNameDialogSubmit}
       />

@@ -15,6 +15,7 @@ import { Template } from "../Types";
 import { FC } from "react";
 import { SaveOutlined } from "@mui/icons-material";
 import { updateTemplateContent } from "../utils/database/templates";
+import { ResizableImage } from "tiptap-extension-resizable-image";
 
 interface TemplateEditorProps {
   template: Template;
@@ -22,7 +23,7 @@ interface TemplateEditorProps {
 
 const TemplateEditor: FC<TemplateEditorProps> = ({ template }) => {
   const editor = useEditor({
-    extensions: [StarterKit, Link, Image, Dropcursor],
+    extensions: [StarterKit, Link, Image, Dropcursor, ResizableImage],
     content: template.content || "Start creating your email template here...",
   });
 

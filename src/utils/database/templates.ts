@@ -11,6 +11,7 @@ export async function initTemplatesTable() {
         CREATE TABLE IF NOT EXISTS templates (
             id TEXT PRIMARY KEY,
             name TEXT NOT NULL,
+            subject Text NOT NULL,
             content TEXT NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )
@@ -25,14 +26,20 @@ export async function initTemplatesTable() {
  * Add a new template to the database.
  * @param id - Unique identifier for the template.
  * @param name - Name of the template.
+ * @param subject - Subject of the template.
  * @param content - HTML content of the template.
  */
-export async function addTemplate(id: string, name: string, content: string) {
+export async function addTemplate(
+  id: string,
+  name: string,
+  subject: string,
+  content: string
+) {
   try {
     const db = await getDatabase();
     await db.execute(
-      "INSERT INTO templates (id, name, content) VALUES (?, ?, ?)",
-      [id, name, content]
+      "INSERT INTO templates (id, name, subject, content) VALUES (?, ?, ?, ?)",
+      [id, name, subject, content]
     );
     console.log(`Template "${name}" added successfully.`);
   } catch (error) {
@@ -45,18 +52,20 @@ export async function addTemplate(id: string, name: string, content: string) {
  * Update an existing template in the database.
  * @param id - Unique identifier of the template to update.
  * @param name - New name of the template.
+ * @param subject - New subject of the template.
  * @param content - New HTML content of the template.
  */
 export async function updateTemplate(
   id: string,
   name: string,
+  subject: string,
   content: string
 ) {
   try {
     const db = await getDatabase();
     const result = await db.execute(
-      "UPDATE templates SET name = ?, content = ? WHERE id = ?",
-      [name, content, id]
+      "UPDATE templates SET name = ?, subject = ?, content = ? WHERE id = ?",
+      [name, subject, content, id]
     );
 
     // Check if the update affected any rows
@@ -122,6 +131,31 @@ export async function updateTemplateContent(id: string, content: string) {
 }
 
 /**
+ * Update the subject of an existing template in the database.
+ * @param id - Unique identifier of the template to update.
+ * @param subject - New subject of the template.
+ */
+export async function updateTemplateSubject(id: string, subject: string) {
+  try {
+    const db = await getDatabase();
+    const result = await db.execute(
+      "UPDATE templates SET subject = ? WHERE id = ?",
+      [subject, id]
+    );
+
+    // Check if the update affected any rows
+    if (result.rowsAffected === 0) {
+      throw new Error(`No template found with ID: ${id}`);
+    }
+
+    console.log(`Template subject updated to "${subject}" successfully.`);
+  } catch (error) {
+    console.error("Error updating template subject:", error);
+    throw error;
+  }
+}
+
+/**
  * Fetch all templates from the database.
  * @returns A list of all templates
  */
@@ -129,7 +163,7 @@ export async function getTemplates() {
   const db = await getDatabase();
   try {
     const results = await db.select<Template[]>(
-      "SELECT id, name, content FROM templates"
+      "SELECT id, name, subject, content FROM templates"
     );
     return results;
   } catch (error) {
@@ -154,7 +188,6 @@ export async function getTemplateById(id: string) {
   } catch (error) {
     console.error("Error fetching template", error);
     throw error;
-    // return null;
   }
 }
 
