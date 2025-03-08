@@ -4,8 +4,9 @@ import {
   DialogTitle,
   IconButton,
   Stack,
+  Typography,
 } from "@mui/material";
-import { Edit, CloseOutlined } from "@mui/icons-material";
+import { EditOutlined, CloseOutlined } from "@mui/icons-material";
 import { FC, useState } from "react";
 import TemplateEditor from "./TemplateEditor";
 import { Template } from "../Types";
@@ -20,29 +21,41 @@ interface EditorDailogProps {
 
 const EditorDailog: FC<EditorDailogProps> = ({ open, template, onClose }) => {
   const [nameDialogOpen, setNameDialogOpen] = useState(false);
+  const [focus, setFocus] = useState(true);
 
   function handleNameDialogClose() {
     setNameDialogOpen(false);
+    setFocus(true);
   }
 
-  function handleNameDialogSubmit(name: string) {
+  function handleNameDialogSubmit(newName: string) {
     if (template) {
-      template.name = name;
-      updateTemplateName(template.id, name);
+      template.name = newName;
+      updateTemplateName(template.id, newName);
     }
     setNameDialogOpen(false);
   }
+
+  function handleEdit() {
+    setFocus(false);
+    setNameDialogOpen(true);
+  }
+
   if (!template) return null;
 
   return (
     <>
       <Dialog open={open} maxWidth="md" fullWidth>
         <DialogTitle>
-          <Stack direction={"row"} justifyContent={"space-between"}>
+          <Stack
+            direction={"row"}
+            justifyContent={"space-between"}
+            alignItems={"center"}
+          >
             <Stack direction={"row"} spacing={1}>
-              <h3>{template.name}</h3>
-              <IconButton onClick={() => setNameDialogOpen(true)}>
-                <Edit />
+              <Typography variant="h6">{template.name}</Typography>
+              <IconButton onClick={handleEdit}>
+                <EditOutlined />
               </IconButton>
             </Stack>
             <Stack direction={"row"} spacing={1}>
@@ -53,16 +66,20 @@ const EditorDailog: FC<EditorDailogProps> = ({ open, template, onClose }) => {
           </Stack>
         </DialogTitle>
         <DialogContent dividers>
-          <TemplateEditor template={template} />
+          <TemplateEditor
+            template={template}
+            focus={focus}
+            setFocus={setFocus}
+          />
         </DialogContent>
+        <GetNameDialog
+          open={nameDialogOpen}
+          text={template.name}
+          label={"Template Name"}
+          onClose={handleNameDialogClose}
+          onSubmit={handleNameDialogSubmit}
+        />
       </Dialog>
-      <GetNameDialog
-        open={nameDialogOpen}
-        text={template.name}
-        label={template.name}
-        onClose={handleNameDialogClose}
-        onSubmit={handleNameDialogSubmit}
-      />
     </>
   );
 };

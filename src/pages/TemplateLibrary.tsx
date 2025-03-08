@@ -31,10 +31,11 @@ function TemplateLibrary() {
     const newId = `template-${Date.now()}`;
     const defaultContent = "Start creating your email template here...";
 
-    addTemplate(newId, templateName, defaultContent);
+    addTemplate(newId, templateName, templateName, defaultContent);
     setNewTemplate({
       id: newId,
       name: templateName,
+      subject: templateName,
       content: defaultContent,
     });
 
@@ -43,6 +44,7 @@ function TemplateLibrary() {
       {
         id: newId,
         name: templateName,
+        subject: templateName,
         content: defaultContent,
       },
     ]);

@@ -32,11 +32,9 @@ const GetNameDialog: React.FC<GetNameDialogProps> = ({
       const timer = setTimeout(() => {
         if (inputRef.current) {
           inputRef.current.focus();
+          setName(text || "");
         }
       }, 200);
-      if (text) {
-        setName(text);
-      }
       return () => clearTimeout(timer);
     }
   }, [open, text]);
@@ -61,7 +59,7 @@ const GetNameDialog: React.FC<GetNameDialogProps> = ({
   };
 
   return (
-    <Dialog open={open} onClose={handleClose}>
+    <Dialog open={open} onClose={handleClose} maxWidth="xs" fullWidth>
       <Box component="form" onSubmit={handleSubmit}>
         <DialogTitle>{label}</DialogTitle>
         <DialogContent>
@@ -72,7 +70,8 @@ const GetNameDialog: React.FC<GetNameDialogProps> = ({
             name={label}
             label={label}
             onChange={handleNameChange}
-            sx={{ marginBlockStart: 2, width: "15rem" }}
+            sx={{ marginBlockStart: 2 }}
+            fullWidth
             autoFocus
             required
           />
