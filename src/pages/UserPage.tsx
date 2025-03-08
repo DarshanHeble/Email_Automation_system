@@ -1,11 +1,12 @@
+import { useMemo, useState } from "react";
+import { type User } from "../Types";
+import { Container, Fab, IconButton } from "@mui/material";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   MaterialReactTable,
   MRT_ColumnDef,
   useMaterialReactTable,
 } from "material-react-table";
-import { useMemo, useState } from "react";
-import { User } from "../Types";
-import { Container, Fab, IconButton } from "@mui/material";
 import {
   DeleteOutlined,
   EditOutlined,
@@ -18,7 +19,6 @@ import {
   removeUser,
   updateUser,
 } from "../utils/database/user";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 function UserTable() {
   const queryClient = useQueryClient();

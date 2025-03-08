@@ -4,7 +4,6 @@ import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import { updateEmailTaskTemplateId } from "../utils/database/emailTask";
 import { getTemplates } from "../utils/database/templates";
-import { Button } from "@mui/material";
 
 function EmailTask() {
   const { taskId } = useParams<{ taskId: string }>();

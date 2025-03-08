@@ -26,11 +26,10 @@ import {
 } from "@mui/icons-material";
 import {
   updateTemplateContent,
-  updateTemplateName,
+  updateTemplateSubject,
 } from "../utils/database/templates";
 import { ResizableImage } from "tiptap-extension-resizable-image";
 import GetNameDialog from "./GetNameDialog";
-import { set } from "date-fns";
 
 interface TemplateEditorProps {
   template: Template;
@@ -94,7 +93,7 @@ const TemplateEditor: FC<TemplateEditorProps> = ({
   function handleNameDialogSubmit(newName: string) {
     if (template) {
       template.subject = newName;
-      updateTemplateName(template.id, newName);
+      updateTemplateSubject(template.id, newName);
     }
     setNameDialogOpen(false);
     setFocus(true);
@@ -128,7 +127,10 @@ const TemplateEditor: FC<TemplateEditorProps> = ({
           <Stack direction={"row"}>
             <Button onClick={() => toggleBold(editor)}>Bold</Button>
             <Button onClick={() => toggleItalic(editor)}>Italic</Button>
-            <Button onClick={() => toggleHeading(editor, 2)}>Heading 2</Button>
+            <Button onClick={() => toggleHeading(editor, 1)}>H1</Button>
+            <Button onClick={() => toggleHeading(editor, 2)}>H2</Button>
+            <Button onClick={() => toggleHeading(editor, 3)}>H3</Button>
+            <Button onClick={() => toggleHeading(editor, 4)}>H4</Button>
             {/* <Button>Add Link</Button> */}
             <Button onClick={() => addImage(editor)}>Add Image</Button>
           </Stack>
