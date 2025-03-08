@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import { FC, useState, MouseEvent } from "react";
 import { Template } from "../Types";
-import EditorDailog from "./EditorDailog";
+import EditorDailog from "./dialog/EditorDailog";
 
 interface TemplateCardProps {
   template: Template;

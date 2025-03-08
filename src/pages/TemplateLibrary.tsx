@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { Fab, Grid2 } from "@mui/material";
 import { Add } from "@mui/icons-material";
 import TemplateCard from "../components/TemplateCard";
-import GetNameDialog from "../components/GetNameDialog";
-import EditorDailog from "../components/EditorDailog";
+import GetNameDialog from "../components/dialog/GetNameDialog";
+import EditorDailog from "../components/dialog/EditorDailog";
 import {
   addTemplate,
   deleteTemplate,

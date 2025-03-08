@@ -8,10 +8,10 @@ import {
 } from "@mui/material";
 import { EditOutlined, CloseOutlined } from "@mui/icons-material";
 import { FC, useState } from "react";
-import TemplateEditor from "./TemplateEditor";
-import { Template } from "../Types";
+import TemplateEditor from "../TemplateEditor";
+import { Template } from "../../Types";
 import GetNameDialog from "./GetNameDialog";
-import { updateTemplateName } from "../utils/database/templates";
+import { updateTemplateName } from "../../utils/database/templates";
 
 interface EditorDailogProps {
   open: boolean;

@@ -29,7 +29,7 @@ import {
   updateTemplateSubject,
 } from "../utils/database/templates";
 import { ResizableImage } from "tiptap-extension-resizable-image";
-import GetNameDialog from "./GetNameDialog";
+import GetNameDialog from "./dialog/GetNameDialog";
 
 interface TemplateEditorProps {
   template: Template;

@@ -19,7 +19,7 @@ import {
   EditOutlined,
   EmailOutlined,
 } from "@mui/icons-material";
-import GetNameDialog from "./GetNameDialog";
+import GetNameDialog from "./dialog/GetNameDialog";
 import { useState, MouseEvent } from "react";
 import { v4 } from "uuid";
 import {
