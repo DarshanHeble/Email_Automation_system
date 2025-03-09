@@ -121,3 +121,21 @@ export async function getUserById(id: string) {
     return null;
   }
 }
+
+// Fetch user data by IDs
+export const getUsersByIds = async (userIds: string[]): Promise<User[]> => {
+  const db = await getDatabase();
+
+  const selectQuery = `
+    SELECT * FROM users WHERE id IN (${userIds.map(() => "?").join(", ")});
+  `;
+
+  try {
+    const result = await db.select<User[]>(selectQuery, userIds);
+    console.log("Retrieved Users by IDs:", result);
+    return result;
+  } catch (error) {
+    console.error("Error retrieving Users by IDs:", error);
+    return [];
+  }
+};

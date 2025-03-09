@@ -1,9 +1,9 @@
-import { FC, useMemo, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import Autocomplete from "@mui/material/Autocomplete";
-import TextField from "@mui/material/TextField";
-import { useQuery } from "@tanstack/react-query";
-import { Container, Fab, IconButton, Stack } from "@mui/material";
+
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { DeleteOutlined, PersonAddAlt1 } from "@mui/icons-material";
+import { Button, Container, Fab, IconButton, Stack } from "@mui/material";
 import {
   MaterialReactTable,
   MRT_ColumnDef,
@@ -13,7 +13,17 @@ import {
 import { updateEmailTaskTemplateId } from "../utils/database/emailTask";
 import { getTemplates } from "../utils/database/templates";
 import { Template, User } from "../Types";
-import { DeleteOutlined, PersonAddAlt1 } from "@mui/icons-material";
+
+import ArraySelectorDialog from "../components/dialog/ArraySelectorDialog";
+import {
+  getTemplateDataByTaskId,
+  getUsersByTaskId,
+} from "../utils/database/utils";
+import {
+  addTaskUserLinkage,
+  deleteTaskUserLinkage,
+} from "../utils/database/taskUserLinkage";
+import { getAllUsers } from "../utils/database/user";
 
 function EmailTask() {
   const { taskId } = useParams<{ taskId: string }>();
@@ -28,8 +38,14 @@ function EmailTask() {
 }
 
 const EmailTaskUserPage: FC<{ taskId: string }> = ({ taskId }) => {
+  const queryClient = useQueryClient();
+
+  const [open, SetOpen] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(
     null
+  );
+  const [currAction, setCurrAction] = useState<"template add" | "user add">(
+    "user add"
   );
 
   const { data: templates } = useQuery({
@@ -37,7 +53,36 @@ const EmailTaskUserPage: FC<{ taskId: string }> = ({ taskId }) => {
     queryFn: getTemplates,
   });
 
-  const handleTemplateChange = async (_event: any, value: Template | null) => {
+  const { data: users } = useQuery({
+    queryKey: ["users"],
+    queryFn: getAllUsers,
+  });
+
+  const { data: template } = useQuery({
+    queryKey: ["template"],
+    queryFn: () => getTemplateDataByTaskId(taskId),
+  });
+
+  // Update the selectedTemplate state when template data changes
+  useEffect(() => {
+    if (template) {
+      setSelectedTemplate(template);
+    }
+  }, [template]);
+
+  const { data: taskUsers } = useQuery({
+    queryKey: ["taskUserLinkage", taskId],
+    queryFn: () => getUsersByTaskId(taskId),
+  });
+
+  const addUserMutation = useMutation({
+    mutationFn: (userId: string) => addTaskUserLinkage(taskId, userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["taskUserLinkage", taskId] });
+    },
+  });
+
+  const handleTemplateChange = async (value: Template | null) => {
     setSelectedTemplate(value);
     if (value && taskId) {
       try {
@@ -47,6 +92,22 @@ const EmailTaskUserPage: FC<{ taskId: string }> = ({ taskId }) => {
         console.error("Failed to update template ID:", error);
       }
     }
+  };
+
+  const deleteUserMutation = useMutation({
+    mutationFn: (userId: string) => deleteTaskUserLinkage(taskId, userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["taskUserLinkage", taskId] });
+    },
+  });
+
+  const handleDeleteUser = (user: User) => {
+    deleteUserMutation.mutate(user.id);
+  };
+
+  const handleAddUser = (user: User) => {
+    addUserMutation.mutate(user.id);
+    SetOpen(false);
   };
 
   const userColumns = useMemo<MRT_ColumnDef<User>[]>(
@@ -73,7 +134,7 @@ const EmailTaskUserPage: FC<{ taskId: string }> = ({ taskId }) => {
 
   const table = useMaterialReactTable({
     columns: userColumns,
-    data: [],
+    data: taskUsers || [],
     enableRowNumbers: true,
     enableEditing: true,
     enableRowActions: true,
@@ -108,38 +169,64 @@ const EmailTaskUserPage: FC<{ taskId: string }> = ({ taskId }) => {
         {/* <IconButton onClick={() => editUser(row.original)}>
           <EditOutlined />
         </IconButton> */}
-        <IconButton color="error" onClick={() => deleteUser(row.original)}>
+        <IconButton
+          color="error"
+          onClick={() => handleDeleteUser(row.original)}
+        >
           <DeleteOutlined />
         </IconButton>
       </div>
     ),
     renderTopToolbarCustomActions: () => (
-      <Stack direction={"row"}>
+      <Stack direction={"row"} alignItems={"center"} justifyContent={"center"}>
         <Fab
           variant="extended"
           onClick={() => {
-            setOpenUserDialog(true);
+            SetOpen(true);
           }}
           sx={{ mb: "1rem" }}
         >
-          <PersonAddAlt1 sx={{ mr: "1rem" }} /> Create New User
+          <PersonAddAlt1 sx={{ mr: "1rem" }} /> Add New User
         </Fab>
-        <Autocomplete
-          options={templates || []}
-          getOptionLabel={(option) => option.name}
-          value={selectedTemplate}
-          onChange={handleTemplateChange}
-          renderInput={(params) => (
-            <TextField {...params} label="Select Template" variant="outlined" />
-          )}
-        />
+        <Button sx={{ mb: "1rem" }} onClick={() => SetOpen(true)}>
+          Connect a Template : {selectedTemplate?.name}
+        </Button>
       </Stack>
     ),
   });
 
+  function handleClose() {
+    SetOpen(false);
+  }
+
   return (
     <>
       <MaterialReactTable table={table} />
+      {currAction === "template add" ? (
+        <ArraySelectorDialog<Template>
+          open={open}
+          title="Connect a template"
+          options={templates || []}
+          text={selectedTemplate}
+          getOptionLabel={(option) => option.name}
+          onClose={handleClose}
+          onSubmit={(value) => {
+            if (value) handleTemplateChange(value);
+          }}
+        />
+      ) : (
+        <ArraySelectorDialog<User>
+          open={open}
+          title="Connect a User"
+          options={users || []}
+          text={null}
+          getOptionLabel={(option) => option.name}
+          onClose={handleClose}
+          onSubmit={(value) => {
+            if (value) handleAddUser(value);
+          }}
+        />
+      )}
     </>
   );
 };

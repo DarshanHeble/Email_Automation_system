@@ -30,3 +30,9 @@ export type EmailTask = {
   createdAt?: string;
   lastUpdatedAt?: string;
 };
+
+export type TaskUserLinkage = {
+  id: string;
+  userId: User["id"];
+  emailTaskId: EmailTask["id"];
+};

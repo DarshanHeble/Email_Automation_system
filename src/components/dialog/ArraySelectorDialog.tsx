@@ -8,38 +8,55 @@ import {
   TextField,
 } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
-// Define the component's props with a generic type T
+// Defined the component's props with a generic type T
 interface ArraySelectorDialogProps<T> {
-  open: boolean; // Whether the dialog is open
-  handleClose: () => void; // Function to close the dialog
-  label: string; // Dialog title
+  open: boolean;
+  title: string;
   options: T[]; // Array of options of type T
-  getOptionLabel: (option: T) => string; // Function to extract the display label from an option
-  onSubmit: (selectedItem: T | null) => void; // Function to handle submission
+  text?: T | null;
+  getOptionLabel: (option: T) => string;
+  onSubmit: (selectedItem: T | null) => void;
+  onClose: () => void;
 }
 
 const ArraySelectorDialog = <T,>({
   open,
-  handleClose,
-  label,
+  title,
   options,
+  text,
   getOptionLabel,
+  onClose,
   onSubmit,
 }: ArraySelectorDialogProps<T>) => {
-  const [selectedItem, setSelectedItem] = useState<T | null>(null);
+  const [selectedItem, setSelectedItem] = useState<T | null>(text || null);
+  const autocompleteRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (open) {
+      // Small delay to ensure dialog is rendered
+      setTimeout(() => {
+        autocompleteRef.current?.focus();
+      }, 100);
+    }
+  }, [open]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     onSubmit(selectedItem); // Pass the selected item to the parent
-    handleClose(); // Close the dialog
+    handleClose();
+  };
+
+  const handleClose = () => {
+    setSelectedItem(null);
+    onClose();
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="xs" fullWidth>
+    <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
       <Box component="form" onSubmit={handleSubmit}>
-        <DialogTitle>{label}</DialogTitle>
+        <DialogTitle>{title}</DialogTitle>
         <DialogContent>
           <Autocomplete
             options={options}
@@ -47,13 +64,15 @@ const ArraySelectorDialog = <T,>({
             renderInput={(params) => (
               <TextField
                 {...params}
+                inputRef={autocompleteRef}
                 label="Select an option"
                 variant="outlined"
                 margin="normal"
               />
             )}
             value={selectedItem}
-            onChange={(event, newValue) => setSelectedItem(newValue)}
+            onChange={(_event, newValue) => setSelectedItem(newValue)}
+            autoFocus
           />
         </DialogContent>
         <DialogActions>

@@ -1,3 +1,5 @@
+import { v4 } from "uuid";
+import { TaskUserLinkage } from "../../Types";
 import { getDatabase } from "./init";
 
 // Initialize the Task-User Linkage Table
@@ -23,12 +25,13 @@ export const initTaskUserLinkageDatabase = async () => {
 };
 
 // Insert a new record into the Task-User Linkage table
-export const insertTaskUserLinkage = async (
-  id: string,
+export const addTaskUserLinkage = async (
   emailTaskId: string,
   userId: string
 ) => {
   const db = await getDatabase();
+
+  const id = v4();
 
   const insertQuery = `
     INSERT INTO task_user_linkage (id, email_task_id, user_id)
@@ -43,19 +46,27 @@ export const insertTaskUserLinkage = async (
   }
 };
 
-// Delete a record by ID from the Task-User Linkage table
-export const deleteTaskUserLinkageById = async (id: string) => {
+// Delete a record by emailTaskId and userId from the Task-User Linkage table
+export const deleteTaskUserLinkage = async (
+  emailTaskId: string,
+  userId: string
+) => {
   const db = await getDatabase();
 
   const deleteQuery = `
-    DELETE FROM task_user_linkage WHERE id = ?;
+    DELETE FROM task_user_linkage WHERE email_task_id = ? AND user_id = ?;
   `;
 
   try {
-    await db.execute(deleteQuery, [id]);
-    console.log(`Task-User linkage with ID ${id} deleted successfully.`);
+    await db.execute(deleteQuery, [emailTaskId, userId]);
+    console.log(
+      `Task-User linkage with emailTaskId ${emailTaskId} and userId ${userId} deleted successfully.`
+    );
   } catch (error) {
-    console.error("Error deleting Task-User Linkage by ID:", error);
+    console.error(
+      "Error deleting Task-User Linkage by emailTaskId and userId:",
+      error
+    );
   }
 };
 
@@ -86,11 +97,9 @@ export const getTaskUserLinkagesByTaskId = async (emailTaskId: string) => {
   `;
 
   try {
-    const result = await db.select(selectQuery, [emailTaskId]);
-    console.log(
-      `Retrieved Task-User Linkages for Task ID ${emailTaskId}:`,
-      result
-    );
+    const result = await db.select<TaskUserLinkage[]>(selectQuery, [
+      emailTaskId,
+    ]);
     return result;
   } catch (error) {
     console.error("Error retrieving Task-User Linkages by Task ID:", error);
