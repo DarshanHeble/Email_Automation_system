@@ -10,19 +10,10 @@ import TemplateLibrary from "./pages/TemplateLibrary";
 import EmailTask from "./pages/EmailTask";
 import UserPage from "./pages/UserPage";
 
-import {
-  DeleteTemplatesTable,
-  initTemplatesTable,
-} from "./utils/database/templates";
-import { deleteUsersTable, initUsersTable } from "./utils/database/user";
-import {
-  deleteEmailTasksTable,
-  initEmailTasksTable,
-} from "./utils/database/emailTask";
-import {
-  deleteTaskUserLinkageTable,
-  initTaskUserLinkageDatabase,
-} from "./utils/database/taskUserLinkage";
+import { initTemplatesTable } from "./utils/database/templates";
+import { initUsersTable } from "./utils/database/user";
+import { initEmailTasksTable } from "./utils/database/emailTask";
+import { initTaskUserLinkageDatabase } from "./utils/database/taskUserLinkage";
 
 function App() {
   const [isOpen, setIsOpen] = useState<boolean>(true);

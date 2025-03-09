@@ -64,7 +64,6 @@ const UserDialog: React.FC<UserDialogProps> = ({
       ...formData,
       dob: formData.dob ? new Date(formData.dob).toISOString() : "",
     };
-    console.table(updatedFormData);
     onSave(updatedFormData, action);
   };
 

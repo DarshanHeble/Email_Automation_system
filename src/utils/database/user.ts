@@ -1,6 +1,5 @@
 import { User } from "../../Types";
 import { getDatabase } from "./init";
-import { format, isValid } from "date-fns";
 
 /**
  * Initialize the User table.
@@ -89,7 +88,6 @@ export async function getAllUsers() {
   try {
     const result = await db.select<User[]>("SELECT * FROM users");
     console.log("Users retrieved successfully.");
-    console.table(result);
     return result;
   } catch (error) {
     console.error("Error retrieving users:", error);
@@ -126,7 +124,6 @@ export const getUsersByIds = async (userIds: string[]): Promise<User[]> => {
 
   try {
     const result = await db.select<User[]>(selectQuery, userIds);
-    console.log("Retrieved Users by IDs:", result);
     return result;
   } catch (error) {
     console.error("Error retrieving Users by IDs:", error);

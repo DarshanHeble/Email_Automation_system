@@ -2,7 +2,11 @@ import { FC, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { DeleteOutlined, PersonAddAlt1 } from "@mui/icons-material";
+import {
+  CableOutlined,
+  DeleteOutlined,
+  PersonAddAlt1,
+} from "@mui/icons-material";
 import { Button, Container, Fab, IconButton, Stack } from "@mui/material";
 import {
   MaterialReactTable,
@@ -47,6 +51,7 @@ const EmailTaskUserPage: FC<{ taskId: string }> = ({ taskId }) => {
   const [currAction, setCurrAction] = useState<"template add" | "user add">(
     "user add"
   );
+  // const [selectedField, setSelectedField] = useState<User>();
 
   const { data: templates } = useQuery({
     queryKey: ["templates"],
@@ -178,19 +183,35 @@ const EmailTaskUserPage: FC<{ taskId: string }> = ({ taskId }) => {
       </div>
     ),
     renderTopToolbarCustomActions: () => (
-      <Stack direction={"row"} alignItems={"center"} justifyContent={"center"}>
+      <Stack
+        direction={"row"}
+        alignItems={"center"}
+        justifyContent={"center"}
+        spacing={1}
+      >
         <Fab
           variant="extended"
+          size="medium"
           onClick={() => {
+            setCurrAction("user add");
             SetOpen(true);
           }}
           sx={{ mb: "1rem" }}
         >
           <PersonAddAlt1 sx={{ mr: "1rem" }} /> Add New User
         </Fab>
-        <Button sx={{ mb: "1rem" }} onClick={() => SetOpen(true)}>
-          Connect a Template : {selectedTemplate?.name}
+        <Button
+          sx={{ mb: "1rem" }}
+          variant="outlined"
+          onClick={() => {
+            setCurrAction("template add");
+            SetOpen(true);
+          }}
+        >
+          <CableOutlined sx={{ mr: 1 }} />
+          {selectedTemplate ? selectedTemplate.name : "Connect a Template"}
         </Button>
+        <Button>Select a field </Button>
       </Stack>
     ),
   });
@@ -198,6 +219,13 @@ const EmailTaskUserPage: FC<{ taskId: string }> = ({ taskId }) => {
   function handleClose() {
     SetOpen(false);
   }
+
+  const availableUsers = useMemo(() => {
+    if (!users || !taskUsers) return [];
+    return users.filter(
+      (user) => !taskUsers.some((taskUser) => taskUser.id === user.id)
+    );
+  }, [users, taskUsers]);
 
   return (
     <>
@@ -218,7 +246,7 @@ const EmailTaskUserPage: FC<{ taskId: string }> = ({ taskId }) => {
         <ArraySelectorDialog<User>
           open={open}
           title="Connect a User"
-          options={users || []}
+          options={availableUsers || []}
           text={null}
           getOptionLabel={(option) => option.name}
           onClose={handleClose}

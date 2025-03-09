@@ -4,7 +4,6 @@ import { Container, Fab, IconButton } from "@mui/material";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   MaterialReactTable,
-  MRT_Cell,
   MRT_ColumnDef,
   useMaterialReactTable,
 } from "material-react-table";
@@ -21,9 +20,9 @@ import {
   updateUser,
 } from "../utils/database/user";
 
-type CellProps = {
-  cell: MRT_Cell<User>;
-};
+// type CellProps = {
+//   cell: MRT_Cell<User>;
+// };
 
 function UserTable() {
   const queryClient = useQueryClient();
@@ -107,6 +106,7 @@ function UserTable() {
     renderTopToolbarCustomActions: () => (
       <Fab
         variant="extended"
+        size="medium"
         onClick={() => {
           setOpenUserDialog(true);
         }}

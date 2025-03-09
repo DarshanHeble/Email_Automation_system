@@ -11,21 +11,19 @@ export async function getTemplateDataByTaskId(taskId: string) {
   try {
     const db = await getDatabase();
     const query = `
-      SELECT template_id
+      SELECT templateId
       FROM email_tasks
       WHERE id = ?
     `;
-    const result = await db.select<{ template_id: string }[]>(query, [taskId]);
+    const result = await db.select<{ templateId: string }[]>(query, [taskId]);
 
     if (result.length === 0) {
-      throw new Error(`No email task found with ID: ${taskId}`);
+      return null;
     }
 
-    const templateId = result[0].template_id;
+    const templateId = result[0].templateId;
     if (!templateId) {
-      throw new Error(
-        `No template ID associated with email task ID: ${taskId}`
-      );
+      return null;
     }
 
     const template = await getTemplateById(templateId);

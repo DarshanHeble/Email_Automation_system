@@ -48,7 +48,7 @@ export async function updateEmailTaskTemplateId(
     const db = await getDatabase();
     const query = `
       UPDATE email_tasks
-      SET templateId = ?,
+      SET templateId = ?
       WHERE id = ?
     `;
     const result = await db.execute(query, [templateId, id]);
