@@ -9,11 +9,10 @@ export async function initEmailTasksTable() {
       CREATE TABLE IF NOT EXISTS email_tasks (
           id TEXT PRIMARY KEY,
           name TEXT NOT NULL,
-          template_id TEXT,
-          scheduled_time DATETIME,
+          templateId TEXT,
+          scheduledTime TEXT,
           status TEXT DEFAULT 'pending',
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-          last_updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+          createdAt TEXT
       )
     `);
 
@@ -49,7 +48,7 @@ export async function updateEmailTaskTemplateId(
     const db = await getDatabase();
     const query = `
       UPDATE email_tasks
-      SET template_id = ?, last_updated_at = CURRENT_TIMESTAMP
+      SET templateId = ?,
       WHERE id = ?
     `;
     const result = await db.execute(query, [templateId, id]);
@@ -74,7 +73,7 @@ export async function updateEmailTaskScheduledTime(
     const db = await getDatabase();
     const query = `
       UPDATE email_tasks
-      SET scheduled_time = ?, last_updated_at = CURRENT_TIMESTAMP
+      SET scheduledTime = ?,
       WHERE id = ?
     `;
     const result = await db.execute(query, [scheduledTime, id]);
@@ -99,7 +98,7 @@ export async function updateEmailTaskStatus(
     const db = await getDatabase();
     const query = `
       UPDATE email_tasks
-      SET status = ?, last_updated_at = CURRENT_TIMESTAMP
+      SET status = ?,
       WHERE id = ?
     `;
     const result = await db.execute(query, [status, id]);
@@ -136,7 +135,7 @@ export async function getAllEmailTasks() {
     const db = await getDatabase();
     const query = `
       SELECT * FROM email_tasks
-      ORDER BY scheduled_time ASC
+      ORDER BY scheduledTime ASC
     `;
     const result = await db.select<EmailTask[]>(query);
     return result;
@@ -162,5 +161,19 @@ export async function getEmailTaskById(id: string) {
   } catch (error) {
     console.error(`Error retrieving email task with ID ${id}:`, error);
     throw new Error("Failed to retrieve email task.");
+  }
+}
+
+// Add this new function after your existing functions
+export async function deleteEmailTasksTable() {
+  try {
+    const db = await getDatabase();
+    await db.execute(`
+      DROP TABLE IF EXISTS email_tasks
+    `);
+    console.log("Email tasks table dropped successfully.");
+  } catch (error) {
+    console.error("Error dropping email_tasks table:", error);
+    throw new Error("Failed to drop email_tasks table.");
   }
 }

@@ -4,6 +4,7 @@ import { Container, Fab, IconButton } from "@mui/material";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   MaterialReactTable,
+  MRT_Cell,
   MRT_ColumnDef,
   useMaterialReactTable,
 } from "material-react-table";
@@ -19,6 +20,10 @@ import {
   removeUser,
   updateUser,
 } from "../utils/database/user";
+
+type CellProps = {
+  cell: MRT_Cell<User>;
+};
 
 function UserTable() {
   const queryClient = useQueryClient();
@@ -48,6 +53,9 @@ function UserTable() {
       {
         accessorKey: "dob",
         header: "DOB",
+        // Cell: ({ cell }: CellProps) => {
+        //   return <div>{dob ? new Date(dob).toLocaleDateString() : "-"}</div>;
+        // },
       },
     ],
     []

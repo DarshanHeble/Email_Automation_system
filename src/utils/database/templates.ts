@@ -13,7 +13,7 @@ export async function initTemplatesTable() {
             name TEXT NOT NULL,
             subject Text NOT NULL,
             content TEXT NOT NULL,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
         )
       `);
     console.log("Template table initialised successfully");
@@ -37,9 +37,11 @@ export async function addTemplate(
 ) {
   try {
     const db = await getDatabase();
+    const createdAt = new Date().toISOString();
+
     await db.execute(
-      "INSERT INTO templates (id, name, subject, content) VALUES (?, ?, ?, ?)",
-      [id, name, subject, content]
+      "INSERT INTO templates (id, name, subject, content, createdAt) VALUES (?, ?, ?, ?, ?)",
+      [id, name, subject, content, createdAt]
     );
     console.log(`Template "${name}" added successfully.`);
   } catch (error) {
@@ -203,5 +205,20 @@ export async function deleteTemplate(id: string) {
   } catch (error) {
     console.error("Error deleting template", error);
     return false;
+  }
+}
+
+/**
+ * Drop the templates table from the database.
+ * WARNING: This will permanently delete all templates!
+ */
+export async function DeleteTemplatesTable() {
+  const db = await getDatabase();
+  try {
+    await db.execute(`DROP TABLE IF EXISTS templates`);
+    console.log("Templates table dropped successfully");
+  } catch (error) {
+    console.error("Error dropping templates table:", error);
+    throw new Error("Failed to drop templates table");
   }
 }

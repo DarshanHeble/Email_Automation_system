@@ -10,12 +10,13 @@ export async function initUsersTable() {
   try {
     await db.execute(`
         CREATE TABLE IF NOT EXISTS users (
-          id TEXT PRIMARY KEY,
-          name TEXT NOT NULL,
-          email TEXT UNIQUE NOT NULL,
-          DOB DATE NOT NULL,
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        email TEXT UNIQUE NOT NULL,
+        dob TEXT NOT NULL,
+        createdAt TEXT NOT NULL
+    );
+
       `);
     console.log("Users table initialized successfully.");
   } catch (error) {
@@ -33,21 +34,14 @@ export async function initUsersTable() {
 export async function addUser(user: User) {
   const db = await getDatabase();
   try {
-    // Validate and parse the DOB
-    const parsedDOB = new Date(user.dob);
-    if (!isValid(parsedDOB)) {
-      throw new Error("Invalid date format for DOB.");
-    }
-
-    // Format DOB as 'YYYY-MM-DD' for SQLite
-    const formattedDOB = format(parsedDOB, "yyyy-MM-dd");
+    const createdAT = new Date().toISOString();
 
     await db.execute(
       `
-        INSERT INTO users (id, name, email, DOB)
-        VALUES (?, ?, ?, ?)
+        INSERT INTO users (id, name, email, dob, createdAt)
+        VALUES (?, ?, ?, ?, ?)
       `,
-      [user.id, user.name, user.email, formattedDOB]
+      [user.id, user.name, user.email, user.dob, createdAT]
     );
     console.log("User added successfully.", user);
   } catch (error) {
@@ -78,7 +72,7 @@ export async function updateUser(user: User) {
   try {
     const query = `
         UPDATE users
-        SET name = ?, email = ?, DOB = ?
+        SET name = ?, email = ?, dob = ?
         WHERE id = ?
       `;
 
@@ -139,3 +133,17 @@ export const getUsersByIds = async (userIds: string[]): Promise<User[]> => {
     return [];
   }
 };
+
+/**
+ * Delete the Users table
+ */
+export async function deleteUsersTable() {
+  const db = await getDatabase();
+  try {
+    await db.execute(`DROP TABLE IF EXISTS users;`);
+    console.log("Users table deleted successfully.");
+  } catch (error) {
+    console.error("Error deleting users table:", error);
+    throw new Error("Failed to delete users table.");
+  }
+}

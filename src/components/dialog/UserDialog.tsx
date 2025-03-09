@@ -8,11 +8,11 @@ import {
   TextField,
   Button,
 } from "@mui/material";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
 import { v4 } from "uuid";
+import { DateTimePicker } from "@mui/x-date-pickers";
 
 interface UserDialogProps {
   open: boolean;
@@ -59,16 +59,19 @@ const UserDialog: React.FC<UserDialogProps> = ({
   };
 
   const handleSubmit = (e: React.FormEvent) => {
-    console.table(formData);
-
     e.preventDefault();
-    onSave(formData, action);
+    const updatedFormData = {
+      ...formData,
+      dob: formData.dob ? new Date(formData.dob).toISOString() : "",
+    };
+    console.table(updatedFormData);
+    onSave(updatedFormData, action);
   };
 
   const handleDateChange = (date: Dayjs | null) => {
     setFormData({
       ...formData,
-      dob: date ? date.format("YYYY-MM-DD") : "",
+      dob: date ? date.toISOString() : "",
     });
   };
 
@@ -122,8 +125,9 @@ const UserDialog: React.FC<UserDialogProps> = ({
             required
           />
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
+            <DateTimePicker
               label="Date of Birth"
+              format="DD/MM/YYYY hh:mm:ss A"
               value={formData.dob ? dayjs(formData.dob) : null}
               onChange={handleDateChange}
               slotProps={{
